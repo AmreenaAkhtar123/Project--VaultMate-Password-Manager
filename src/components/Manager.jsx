@@ -58,9 +58,21 @@ const Manager = () => {
 			setpasswordArray(newPasswords);
 			localStorage.setItem("passwords", JSON.stringify(newPasswords));
 		}
+		
 
 		// reset form after save
 		setForm({ site: "", username: "", password: "" });
+		toast('Password Saved', {
+			position: "top-right",
+			autoClose: 2000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "light",
+		});
+		
 	};
 
 
@@ -71,6 +83,16 @@ const Manager = () => {
 			setpasswordArray(updatedPasswords);
 			localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
 		}
+		toast('Deleted Password', {
+			position: "top-right",
+			autoClose: 2000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "light",
+		});
 	};
 
 
@@ -99,12 +121,6 @@ const Manager = () => {
 			theme: "light",
 		});
 	}
-	// 	const copyText = (text) => {
-	//   navigator.clipboard.writeText(text);
-	//   toast.success("Copied to clipboard!"); // uses container config
-	// }
-
-
 	return (
 		<>
 			<ToastContainer
