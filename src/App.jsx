@@ -8,7 +8,7 @@ function App() {
 	return (
 		<>
 			<Navbar />
-			<Manager />
+			<div className='flex min-h-[85vh]'><Manager /></div>
 			<Footer />
 		</>
 	)

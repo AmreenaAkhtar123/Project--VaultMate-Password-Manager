@@ -44,55 +44,61 @@ const Manager = () => {
 	// 	console.log(passwordArray)
 	// }
 	const savePassword = () => {
-		if (form.id) {
-			// update existing password
-			const updatedPasswords = passwordArray.map(item =>
-				item.id === form.id ? form : item
-			);
-			setpasswordArray(updatedPasswords);
-			localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
-		} else {
-			// add new password
-			const newPassword = { ...form, id: uuidv4() };
-			const newPasswords = [...passwordArray, newPassword];
-			setpasswordArray(newPasswords);
-			localStorage.setItem("passwords", JSON.stringify(newPasswords));
-		}
-		
+  if (
+    form.site.length > 3 &&
+    form.username.length > 3 &&
+    form.password.length > 3
+  ) {
+    if (form.id) {
+      // update existing password
+      const updatedPasswords = passwordArray.map(item =>
+        item.id === form.id ? form : item
+      );
+      setpasswordArray(updatedPasswords);
+      localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+    } else {
+      // add new password
+      const newPassword = { ...form, id: uuidv4() };
+      const newPasswords = [...passwordArray, newPassword];
+      setpasswordArray(newPasswords);
+      localStorage.setItem("passwords", JSON.stringify(newPasswords));
+    }
 
-		// reset form after save
-		setForm({ site: "", username: "", password: "" });
-		toast('Password Saved', {
-			position: "top-right",
-			autoClose: 2000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: "light",
-		});
-		
-	};
+    // reset form after save
+    setForm({ site: "", username: "", password: "" });
+
+    toast.success("Password Saved!", {
+      position: "top-right",
+      duration: 2000,
+    });
+  } else {
+    toast.error("All fields must be longer than 3 characters!", {
+      position: "top-right",
+      duration: 2000,
+    });
+  }
+};
+
 
 
 	const deletePassword = (id) => {
-		const confirmed = window.confirm("Are you sure you want to delete this password?");
-		if (confirmed) {
+		if (window.confirm("Are you sure you want to delete this password?")) {
 			const updatedPasswords = passwordArray.filter(password => password.id !== id);
 			setpasswordArray(updatedPasswords);
 			localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+
+			toast.success('Deleted Password', {
+				position: "top-right",
+				autoClose: 2000,
+				theme: "colored",
+			});
+		} else {
+			toast.info('Delete cancelled', {
+				position: "top-right",
+				autoClose: 2000,
+				theme: "light",
+			});
 		}
-		toast('Deleted Password', {
-			position: "top-right",
-			autoClose: 2000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: "light",
-		});
 	};
 
 
@@ -153,7 +159,7 @@ const Manager = () => {
 
 				<div className='text-black flex flex-col gap-6 p-4 items-center'>
 					<input value={form.site} onChange={handleChange} placeholder='Enter website URL' className='border border-[#3c0265] w-full rounded-full p-2 pl-5 py-1 ' type="text" name="site" id="site" />
-					<div className="flex w-full justify-between gap-4">
+					<div className="flex flex-col  md:flex-row w-full justify-between gap-4">
 						<input value={form.username} onChange={handleChange} placeholder='Enter Username' className='border border-[#3c0265] w-full rounded-full p-2 pl-5 py-1 ' type="text" name="username" id="username" />
 
 						<div className='relative '>
@@ -181,81 +187,88 @@ const Manager = () => {
 					<p className='text-2xl font-bold mt-5 mb-2'>Your Passwords</p>
 					{passwordArray.length === 0 && <div>No passwords saved yet</div>}
 					{passwordArray.length > 0 &&
-						<table className="table-auto w-full rounded-md overflow-hidden ">
-							<thead className='bg-[#3c0265] text-white'>
-								<tr>
-									<th className='py-2 text-[12px]'>Site</th>
-									<th className='py-2 text-[12px]'>Username</th>
-									<th className='py-2 text-[12px]'>Password</th>
-									<th className='py-2 text-[12px]'>Actions</th>
-								</tr>
-							</thead>
-							<tbody className='bg-[#e3d4ed]'>
-								{passwordArray.map((item) => {
-									return (
-										<tr key={item.id}>
-											<td className='text-center w-40 py-2 border-1 border-white'>
-												<div className='flex items-center justify-center '>
-													<a href={item.site} target='_blank'>{item.site}</a>
-													<div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.site) }}>
-														<lord-icon
-															style={{ "width": "23px", "height": "23px", "paddingTop": "3px", "paddingLeft": "3px" }}
-															src="https://cdn.lordicon.com/iykgtsbt.json"
-															trigger="hover" >
-														</lord-icon>
+						// <div className="max-h-80 overflow-y-auto mt-6 rounded-lg shadow border border-gray-200 relative">
+
+							<table className="table-auto w-full rounded-md overflow-hidden mb-10 ">
+								<thead className='bg-[#3c0265] text-white sticky top-0 z-10npm install tailwind-scrollbar-hide
+'>
+									<tr>
+										<th className='py-2 text-[12px]'>Site</th>
+										<th className='py-2 text-[12px]'>Username</th>
+										<th className='py-2 text-[12px]'>Password</th>
+										<th className='py-2 text-[12px]'>Actions</th>
+									</tr>
+								</thead>
+								<tbody className='bg-[#e3d4ed]'>
+
+									{passwordArray.map((item) => {
+										return (
+											<tr key={item.id}>
+												<td className='text-center w-40 py-2 border-1 border-white'>
+													<div className='flex items-center justify-center '>
+														<a href={item.site} target='_blank'>{item.site}</a>
+														<div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.site) }}>
+															<lord-icon
+																style={{ "width": "23px", "height": "23px", "paddingTop": "3px", "paddingLeft": "3px" }}
+																src="https://cdn.lordicon.com/iykgtsbt.json"
+																trigger="hover" >
+															</lord-icon>
+														</div>
 													</div>
-												</div>
 
-											</td>
-											<td className='text-center w-40 py-2 border-1 border-white'>
-												<div className='flex items-center justify-center '>
-													<span>{item.username}</span>
-													<div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.username) }}>
-														<lord-icon
-															style={{ "width": "23px", "height": "23px", "paddingTop": "3px", "paddingLeft": "3px" }}
-															src="https://cdn.lordicon.com/iykgtsbt.json"
-															trigger="hover" >
-														</lord-icon>
+												</td>
+												<td className='text-center w-40 py-2 border-1 border-white'>
+													<div className='flex items-center justify-center '>
+														<span>{item.username}</span>
+														<div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.username) }}>
+															<lord-icon
+																style={{ "width": "23px", "height": "23px", "paddingTop": "3px", "paddingLeft": "3px" }}
+																src="https://cdn.lordicon.com/iykgtsbt.json"
+																trigger="hover" >
+															</lord-icon>
+														</div>
 													</div>
-												</div>
 
-											</td>
-											<td className='text-center w-40 py-2 border-1 border-white'>
-												<div className='flex items-center justify-center '>
-													<span>{item.password}</span>
-													<div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.password) }}>
-														<lord-icon
-															style={{ "width": "23px", "height": "23px", "paddingTop": "3px", "paddingLeft": "3px" }}
-															src="https://cdn.lordicon.com/iykgtsbt.json"
-															trigger="hover" >
-														</lord-icon>
+												</td>
+												<td className='text-center w-40 py-2 border-1 border-white'>
+													<div className='flex items-center justify-center '>
+														<span>{item.password}</span>
+														<div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.password) }}>
+															<lord-icon
+																style={{ "width": "23px", "height": "23px", "paddingTop": "3px", "paddingLeft": "3px" }}
+																src="https://cdn.lordicon.com/iykgtsbt.json"
+																trigger="hover" >
+															</lord-icon>
+														</div>
 													</div>
-												</div>
-											</td>
+												</td>
 
-											<td className='text-center w-40 py-2 border-1 border-white'>
-												<div className='flex items-center justify-center '>
-													<span onClick={() => editPassword(item.id)}>
-														<lord-icon
-															src="https://cdn.lordicon.com/gwlusjdu.json"
-															trigger="hover"
-															style={{ "width": "18px", "height": "18px" }}>
-														</lord-icon>
-													</span>
-													<span onClick={() => deletePassword(item.id)}>
-														<lord-icon
-															src="https://cdn.lordicon.com/skkahier.json"
-															trigger="hover"
-															style={{ "width": "18px", "height": "18px" }}>
-														</lord-icon></span>
+												<td className='text-center w-40 py-2 border-1 border-white'>
+													<div className='flex items-center justify-center '>
+														<span onClick={() => editPassword(item.id)}>
+															<lord-icon
+																src="https://cdn.lordicon.com/gwlusjdu.json"
+																trigger="hover"
+																style={{ "width": "18px", "height": "18px" }}>
+															</lord-icon>
+														</span>
+														<span onClick={() => deletePassword(item.id)}>
+															<lord-icon
+																src="https://cdn.lordicon.com/skkahier.json"
+																trigger="hover"
+																style={{ "width": "18px", "height": "18px" }}>
+															</lord-icon></span>
 
-												</div>
-											</td>
-										</tr>
-									)
-								})}
-							</tbody>
-						</table>
+													</div>
+												</td>
+											</tr>
+										)
+									})}
+
+
+								</tbody>
+							</table>
+						// </div>
 					}
 
 				</div>
