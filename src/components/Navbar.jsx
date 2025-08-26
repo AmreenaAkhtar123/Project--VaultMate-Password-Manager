@@ -17,11 +17,10 @@ const Navbar = () => {
 						<a className="mr-5 hover:text-amber-500">About</a>
 						<a className="mr-5 hover:text-amber-500">Contact</a>
 					</nav>
-					{/* <button class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Button
-						<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
-							<path d="M5 12h14M12 5l7 7-7 7"></path>
-						</svg>
-					</button> */}
+					<button class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-purple-200 rounded-full text-base mt-4 md:mt-0 text-black">
+						<span className='font-bold'>GitHub</span>
+						<img className='w-6 h-6 ml-1' src="public/icons/github.svg" alt="GitHub" />
+					</button>
 				</div>
 			</header>
 		</>

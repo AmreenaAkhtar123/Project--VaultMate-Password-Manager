@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 
 const Manager = () => {
 	const ref = useRef();
+	const passwordRef = useRef();
 	const [form, setForm] = useState({
 		site: '',
 		username: '',
@@ -21,13 +22,16 @@ const Manager = () => {
 
 
 	const showPassword = () => {
+		
 		if (ref.current.src.includes("public/icons/eyecross.png")) {
 			alert("Show the password");
 			ref.current.src = "public/icons/eye.png"
+			passwordRef.current.type = "text"
 		}
 		else {
 			alert("Hide the password");
 			ref.current.src = "public/icons/eyecross.png"
+			passwordRef.current.type = "password"
 		}
 	}
 
@@ -63,9 +67,9 @@ const Manager = () => {
 						<input value={form.username} onChange={handleChange} placeholder='Enter Username' className='border border-[#3c0265] w-full rounded-full p-2 pl-5 py-1 ' type="text" name="username" id="username" />
 
 						<div className='relative '>
-							<input value={form.password} onChange={handleChange} placeholder='Enter Password' className='border border-[#3c0265] w-full rounded-full p-2 pl-5 py-1 ' type="text" name="password" id="password" />
+							<input ref={passwordRef} value={form.password} onChange={handleChange} placeholder='Enter Password' className='border border-[#3c0265] w-full rounded-full p-2 pl-5 py-1 ' type="password" name="password" id="password" />
 							<span className='absolute right-[3px] top-[3px] cursor-pointer' onClick={showPassword}>
-								<img ref={ref} className='p-1' width={22} src="public/icons/eye.png" alt="eye" />
+								<img ref={ref} className='p-1' width={22} src="public/icons/eyecross.png" alt="eye" />
 							</span>
 						</div>
 
