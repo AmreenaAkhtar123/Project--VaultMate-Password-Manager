@@ -2,6 +2,7 @@ import React from 'react'
 import { useRef, useState, useEffect } from 'react';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { v4 as uuidv4 } from 'uuid';
 
 const Manager = () => {
 	const ref = useRef();
@@ -37,11 +38,49 @@ const Manager = () => {
 		}
 	}
 
+	// const savePassword = () => {
+	// 	setpasswordArray([...passwordArray, {...form, id: uuidv4()}]);
+	// 	localStorage.setItem("passwords", JSON.stringify([...passwordArray, {...form, id: uuidv4()}]));
+	// 	console.log(passwordArray)
+	// }
 	const savePassword = () => {
-		setpasswordArray([...passwordArray, form]);
-		localStorage.setItem("passwords", JSON.stringify([...passwordArray, form]));
-		console.log(passwordArray)
-	}
+		if (form.id) {
+			// update existing password
+			const updatedPasswords = passwordArray.map(item =>
+				item.id === form.id ? form : item
+			);
+			setpasswordArray(updatedPasswords);
+			localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+		} else {
+			// add new password
+			const newPassword = { ...form, id: uuidv4() };
+			const newPasswords = [...passwordArray, newPassword];
+			setpasswordArray(newPasswords);
+			localStorage.setItem("passwords", JSON.stringify(newPasswords));
+		}
+
+		// reset form after save
+		setForm({ site: "", username: "", password: "" });
+	};
+
+
+	const deletePassword = (id) => {
+		const confirmed = window.confirm("Are you sure you want to delete this password?");
+		if (confirmed) {
+			const updatedPasswords = passwordArray.filter(password => password.id !== id);
+			setpasswordArray(updatedPasswords);
+			localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+		}
+	};
+
+
+
+	const editPassword = (id) => {
+		console.log("Editing password with id", id);
+		const passwordToEdit = passwordArray.find(item => item.id === id);
+		setForm(passwordToEdit);   // just load into form
+	};
+
 
 	const handleChange = (e) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
@@ -60,10 +99,10 @@ const Manager = () => {
 			theme: "light",
 		});
 	}
-// 	const copyText = (text) => {
-//   navigator.clipboard.writeText(text);
-//   toast.success("Copied to clipboard!"); // uses container config
-// }
+	// 	const copyText = (text) => {
+	//   navigator.clipboard.writeText(text);
+	//   toast.success("Copied to clipboard!"); // uses container config
+	// }
 
 
 	return (
@@ -111,12 +150,13 @@ const Manager = () => {
 					</div>
 
 					<button onClick={savePassword} className='flex justify-center items-center bg-[#3c0265] hover:bg-[#4a067a] rounded-full px-10 py-2 text-white w-fit gap-4'>
+
+						Save
 						<lord-icon
 							src="https://cdn.lordicon.com/jgnvfzqg.json"
 							trigger="hover"
 							colors="primary:#ffffff,secondary:#ffffff"
 							style={{ width: '25px', height: '25px' }}></lord-icon>
-						Add Password
 					</button>
 
 				</div>
@@ -131,6 +171,7 @@ const Manager = () => {
 									<th className='py-2 text-[12px]'>Site</th>
 									<th className='py-2 text-[12px]'>Username</th>
 									<th className='py-2 text-[12px]'>Password</th>
+									<th className='py-2 text-[12px]'>Actions</th>
 								</tr>
 							</thead>
 							<tbody className='bg-[#e3d4ed]'>
@@ -173,6 +214,25 @@ const Manager = () => {
 															trigger="hover" >
 														</lord-icon>
 													</div>
+												</div>
+											</td>
+
+											<td className='text-center w-40 py-2 border-1 border-white'>
+												<div className='flex items-center justify-center '>
+													<span onClick={() => editPassword(item.id)}>
+														<lord-icon
+															src="https://cdn.lordicon.com/gwlusjdu.json"
+															trigger="hover"
+															style={{ "width": "18px", "height": "18px" }}>
+														</lord-icon>
+													</span>
+													<span onClick={() => deletePassword(item.id)}>
+														<lord-icon
+															src="https://cdn.lordicon.com/skkahier.json"
+															trigger="hover"
+															style={{ "width": "18px", "height": "18px" }}>
+														</lord-icon></span>
+
 												</div>
 											</td>
 										</tr>
